@@ -6,4 +6,3 @@ dan `/api/orders` same-origin via gateway yang sama (tanpa CORS).
 
 Microservice ke-4 — ditambahkan untuk membuktikan pola: repo baru + folder baru
 di gitops, ApplicationSet mendeteksi otomatis, pipeline PaC identik.
-# shop-ui
