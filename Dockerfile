@@ -1,12 +1,15 @@
+# Base image ditarik langsung dari Docker Hub (tanpa mirror registry internal)
 FROM docker.io/library/golang:1.26-alpine AS builder
+
 ARG VERSION=1.0.0
 WORKDIR /src
 COPY . .
 RUN CGO_ENABLED=0 go build -mod=vendor -ldflags "-s -w" -o /out/shop-ui .
 
 FROM docker.io/library/alpine:3.23
-# user non-root; nc & wget bawaan busybox (dipakai test NetworkPolicy)
+# runtime-base internal digantikan alpine polos -> user non-root dibuat di sini
 RUN addgroup -S app && adduser -S -G app app
+
 ARG VERSION=1.0.0
 ENV VERSION=${VERSION}
 WORKDIR /home/app
