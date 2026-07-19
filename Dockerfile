@@ -1,17 +1,16 @@
-# Base images di-mirror ke internal registry agar build tidak tergantung internet
-FROM image-registry.openshift-image-registry.svc:5000/virtus-shop-ci/golang:1.26-alpine AS builder
-
+FROM docker.io/library/golang:1.26-alpine AS builder
 ARG VERSION=1.0.0
 WORKDIR /src
 COPY . .
-RUN CGO_ENABLED=0 go build -mod=vendor -ldflags "-s -w" -o /out/shop-ui .
+RUN CGO_ENABLED=0 go build -mod=vendor -ldflags "-s -w" -o /out/<nama-app> .
 
-FROM image-registry.openshift-image-registry.svc:5000/virtus-shop-ci/runtime-base:latest
-
+FROM docker.io/library/alpine:3.23
+# user non-root; nc & wget bawaan busybox (dipakai test NetworkPolicy)
+RUN addgroup -S app && adduser -S -G app app
 ARG VERSION=1.0.0
 ENV VERSION=${VERSION}
 WORKDIR /home/app
-COPY --from=builder /out/shop-ui .
+COPY --from=builder /out/<nama-app> .
 USER app
 EXPOSE 8080
 CMD ["./shop-ui"]
